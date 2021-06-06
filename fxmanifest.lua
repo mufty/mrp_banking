@@ -17,6 +17,7 @@ files {
     'ui/main.js',
     'ui/style.css',
     'ui/index.html',
+    'config/config.json',
 }
 
 client_scripts {

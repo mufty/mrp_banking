@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    $('.main_container').hide();
+    $('body').hide();
 
     $('.account_types a').click(function() {
         $('.account_types a.selected').removeClass('selected');
@@ -65,6 +65,17 @@ $(document).ready(() => {
         $('.transfer').show();
     });
 
+    $('a.exit').click(function() {
+        $('.account_list').show();
+        $('.withdraw').hide();
+        $('.deposit').hide();
+        $('.create_account').hide();
+        $('.account_detail').hide();
+        $('.transfer').hide();
+        $('body').hide();
+        $.post('https://mrp_banking/close', JSON.stringify({}));
+    });
+
     $('.account_detail').hide();
     $('.create_account').hide();
     $('.deposit').hide();
@@ -75,7 +86,11 @@ $(document).ready(() => {
         var data = event.data;
         switch (data.type) {
             case "show":
-                $('.main_container').show();
+                $('body').show();
+                break;
+            case "close":
+                $('body').hide();
+                break;
             default:
                 break;
         }

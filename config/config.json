@@ -1,5 +1,8 @@
 {
+    "helpText1":"Press ~INPUT_PICKUP~ to use bank terminal ~b~",
+    "helpText2":"Press ~INPUT_PICKUP~ to use ATM terminal ~b~",
     "showBlips": true,
+    "useATMS": true,
     "banks": [
         {"name":"Bank", "id":108, "x":150.266, "y":-1040.203, "z":29.374},
     	{"name":"Bank", "id":108, "x":-1212.980, "y":-330.841, "z":37.787},

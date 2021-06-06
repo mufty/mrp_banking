@@ -140,7 +140,7 @@ hr {
     font-size: 12px;
 }
 
-input {
+input[type=text] {
     margin-left: 7px;
     padding-right: 10px;
     padding-left: 10px;
@@ -167,7 +167,8 @@ input {
     text-align: center;
 }
 
-button {
+button,
+input[type=submit] {
     padding: 10px;
     border-radius: 10px;
     border-style: none;

@@ -82,6 +82,23 @@ $(document).ready(() => {
     $('.withdraw').hide();
     $('.transfer').hide();
 
+    function formToJson(arr) {
+        let json = {};
+        for (let item of arr) {
+            json[item.name] = item.value;
+        }
+        return json;
+    }
+
+    $("#create_account_form").validate({
+        submitHandler: function(form) {
+            let values = formToJson($(form).serializeArray());
+            $.post('https://mrp_banking/create_account', JSON.stringify(values), (data) => {
+                console.log(data);
+            });
+        }
+    });
+
     window.addEventListener('message', function(event) {
         var data = event.data;
         switch (data.type) {

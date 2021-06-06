@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js" type="text/javascript"></script>
     <script src="main.js" type="text/javascript"></script>
     <link href="style.css" rel="stylesheet"></link>
 </head>
@@ -159,13 +160,15 @@
                 </div>
             </div>
             <div class="create_account">
-                <div class="row">
-                    <label for="account_name">Account name</label>
-                    <input type="text" id="account_name"/>
-                </div>
-                <div class="row submit">
-                    <button type="text" id="account_submit">Create</button>
-                </div>
+                <form id="create_account_form">
+                    <div class="row">
+                        <label for="account_name">Account name</label>
+                        <input type="text" name="account_name" id="account_name" required/>
+                    </div>
+                    <div class="row submit">
+                        <input type="submit" id="account_submit" value="Create"/>
+                    </div>
+                </form>
             </div>
             <div class="account_list">
                 <table class="accounts">

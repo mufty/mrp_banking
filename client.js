@@ -1,3 +1,11 @@
+MRP_CLIENT = null;
+
+emit('mrp:getSharedObject', obj => MRP_CLIENT = obj);
+
+while (MRP_CLIENT == null) {
+    print('Waiting for shared object....');
+}
+
 eval(LoadResourceFile('mrp_core', 'client/helpers.js'));
 
 configFile = LoadResourceFile(GetCurrentResourceName(), 'config/config.json');
@@ -78,27 +86,28 @@ async function deleteProps(wallet, id) {
     DeleteEntity(wallet);
 }
 
+on('mrp:banking:ui:show', () => {
+    SetNuiFocus(true, true);
+    SendNuiMessage(JSON.stringify({
+        type: 'show'
+    }));
+    playBankAnim();
+    playWalletProps();
+});
+
 setInterval(() => {
     if (nearBank()) {
         displayHelpText(config.helpText1);
 
         if (IsControlJustPressed(1, 38)) {
-            SetNuiFocus(true, true);
-            SendNuiMessage(JSON.stringify({
-                type: 'show'
-            }));
-            playBankAnim();
-            playWalletProps();
+            emit('mrp:banking:ui:show');
         }
     } else if (nearATM()) {
         if (config.useATMS) {
             displayHelpText(config.helpText2);
 
             if (IsControlJustPressed(1, 38)) {
-                SetNuiFocus(true, true);
-                SendNuiMessage(JSON.stringify({
-                    type: 'show'
-                }));
+                emit('mrp:banking:ui:show');
             }
 
             if (IsControlJustPressed(1, 322)) {
@@ -115,4 +124,11 @@ RegisterNuiCallbackType('close');
 on('__cfx_nui:close', (data, cb) => {
     SetNuiFocus(false, false);
     cb();
+});
+
+RegisterNuiCallbackType('create_account');
+on('__cfx_nui:create_account', (data, cb) => {
+    MRP_CLIENT.TriggerServerCallback('mrp:bankin:server:createAccount', [data], (result) => {
+        cb(result);
+    });
 });

@@ -1,0 +1,221 @@
+@font-face {
+    font-family: coolvetica_rg;
+    src: url(./fonts/coolvetica_rg.ttf);
+}
+
+body {
+    font-family: coolvetica_rg;
+    color: #FCFCFC;
+    background-color: rgba(27, 29, 31, 0.3);
+}
+
+.main_container {
+    padding: 20px;
+    width: 800px;
+    height: 600px;
+    border-radius: 20px;
+    margin: auto;
+    box-shadow: 0 0 6px 0px #000000;
+    background: linear-gradient(0deg, rgba(46, 48, 53, 1) 0%, rgba(61, 66, 71, 1) 100%);
+}
+
+.top_section {
+    color: #868788;
+    line-height: 25px;
+    background-repeat: no-repeat;
+    background-size: 100px;
+    height: 40px;
+    background-image: url(imgs/fleeca_logo.png);
+    background-position: left;
+    text-align: left;
+    padding-left: 120px;
+    font-size: 18px;
+}
+
+.green {
+    color: #20883B;
+}
+
+.top_sub {
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    font-size: 30px;
+}
+
+a {
+    color: #FCFCFC;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #20883B;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.account_types .green {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+7 .account_types {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    color: #868788;
+}
+
+.account_types a {
+    color: #868788;
+}
+
+div a.selected {
+    color: #FCFCFC;
+}
+
+hr {
+    border: 1px solid #40444A;
+}
+
+.top_sub .account_types {
+    font-size: 16px;
+}
+
+.scroll_container {
+    margin-top: 20px;
+    height: 360px;
+    overflow: auto;
+}
+
+.row .col {
+    display: inline-block;
+}
+
+.accounts {
+    width: 100%;
+}
+
+.accounts th {
+    font-weight: normal;
+    color: #868788;
+}
+
+.accounts .col_3,
+.accounts .col_2,
+.accounts .col_4 {
+    width: 100px;
+}
+
+.accounts td.col_1 {
+    border-right: 1px solid #20883B;
+}
+
+.accounts td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.accounts td.col_3,
+.accounts td.col_2,
+.accounts td.col_4 {
+    text-align: center;
+}
+
+.accounts td.col_2 {
+    color: #868788;
+}
+
+.accounts td.col_1 {
+    font-size: 32px;
+}
+
+.bottom_container {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 30px;
+}
+
+.account_sub {
+    color: #868788;
+    font-size: 12px;
+}
+
+input {
+    margin-left: 7px;
+    padding-right: 10px;
+    padding-left: 10px;
+    font-size: 20px;
+    line-height: 45px;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid #40444A;
+    background-color: #5F6268;
+    width: 95%;
+    color: #ffffff;
+    border-top: none;
+    font-family: 'coolvetica_rg';
+    border-radius: 10px;
+    box-shadow: 0 0 6px 0px #2A2B2E;
+    margin-top: 20px;
+}
+
+.create_account .row {
+    margin-top: 20px;
+}
+
+.row.submit {
+    text-align: center;
+}
+
+button {
+    padding: 10px;
+    border-radius: 10px;
+    border-style: none;
+    font-family: 'coolvetica_rg';
+    font-size: 18px;
+    cursor: pointer;
+    background: linear-gradient(219deg, rgba(23, 94, 41, 1) 0%, rgba(32, 136, 59, 1) 100%);
+    color: #ffffff;
+    box-shadow: 0 0 6px 0px #2a2b2e;
+}
+
+.account_name {
+    color: #868788;
+}
+
+.decrease {
+    color: #DF593D;
+}
+
+.increase {
+    color: #20883B;
+}
+
+.paging {
+    text-align: center;
+}
+
+.paging a {
+    color: #868788;
+}
+
+.paging .green {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.action a {
+    font-size: 16px;
+}
+
+.balance,
+.cash {
+    color: #ffffff;
+}
+
+.deposit .row,
+.withdraw .row,
+.transfer .row {
+    margin-top: 20px;
+    color: #868788;
+}

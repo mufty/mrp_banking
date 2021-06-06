@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+    <script src="main.js" type="text/javascript"></script>
+    <link href="style.css" rel="stylesheet"></link>
+</head>
+
+<body>
+    <div class="main_container">
+        <div class="top_section"><span class="green">|</span>&nbsp;&nbsp;&nbsp;World's best bank ... we don't scam people</div>
+        <div class="top_sub">
+            <div class="transfer">
+                375-2611-6457-3185
+                <div class="account_types">
+                    <span class="account_name">Mike's personal account</span>
+                </div>
+            </div>
+            <div class="account_detail">
+                375-2611-6457-3185
+                <div class="account_types">
+                    <span class="account_name">Mike's personal account</span>
+                </div>
+            </div>
+            <div class="deposit">
+                375-2611-6457-3185
+                <div class="account_types">
+                    <span class="account_name">Mike's personal account</span>
+                </div>
+            </div>
+            <div class="withdraw">
+                375-2611-6457-3185
+                <div class="account_types">
+                    <span class="account_name">Mike's personal account</span>
+                </div>
+            </div>
+            <div class="create_account">
+                Create account
+                <div class="account_types">
+                    <a href="#" class="personal selected" id="personal">Personal</a>
+                    <span class="green">|</span>
+                    <a href="#" class="business" id="savings">Savings</a>
+                </div>
+            </div>
+            <div class="account_list">
+                Choose account type
+                <div class="account_types">
+                    <a href="#" class="personal selected">Personal</a>
+                    <span class="green">|</span>
+                    <a href="#" class="business">Business</a>
+                    <span class="green">|</span>
+                    <a href="#" class="business">Savings</a>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="scroll_container">
+            <div class="transfer">
+                <div class="row">
+                    Balance
+                    <span class="balance">$ 1 000 000</span>
+                </div>
+                <div class="row">
+                    Cash
+                    <span class="cash">$ 1 000</span>
+                </div>
+                <div class="row">
+                    <label for="transfer_amount">Amount</label>
+                    <input type="text" id="transfer_amount"/>
+                </div>
+                <div class="row">
+                    <label for="transfer_account">Account number (or state ID for personal accounts)</label>
+                    <input type="text" id="transfer_account"/>
+                </div>
+                <div class="row submit">
+                    <button type="text" id="transfer_submit">Transfer</button>
+                </div>
+            </div>
+            <div class="deposit">
+                <div class="row">
+                    Balance
+                    <span class="balance">$ 1 000 000</span>
+                </div>
+                <div class="row">
+                    Cash
+                    <span class="cash">$ 1 000</span>
+                </div>
+                <div class="row">
+                    <label for="deposit_amount">Amount</label>
+                    <input type="text" id="deposit_amount"/>
+                </div>
+                <div class="row submit">
+                    <button type="text" id="deposit_submit">Deposit</button>
+                </div>
+            </div>
+            <div class="withdraw">
+                <div class="row">
+                    Balance
+                    <span class="balance">$ 1 000 000</span>
+                </div>
+                <div class="row">
+                    Cash
+                    <span class="cash">$ 1 000</span>
+                </div>
+                <div class="row">
+                    <label for="withdraw_amount">Amount</label>
+                    <input type="text" id="withdraw_amount"/>
+                </div>
+                <div class="row submit">
+                    <button type="text" id="withdraw_submit">Withdraw</button>
+                </div>
+            </div>
+            <div class="account_detail">
+                <table class="accounts">
+                    <tr>
+                        <th class="col_1"></th>
+                        <th class="col_2">Type</th>
+                        <th class="col_3">Author</th>
+                        <th class="col_4">Date</th>
+                    </tr>
+                    <tr>
+                        <td class="col_1"><span class="increase">$ 1 000</span></td>
+                        <td class="col_2">Deposit</td>
+                        <td class="col_3">Mike Hawk</td>
+                        <td class="col_4">4/6/2016 20:00</td>
+                    </tr>
+                    <tr>
+                        <td class="col_1"><span class="decrease">$ 500</span></td>
+                        <td class="col_2">Withdraw</td>
+                        <td class="col_3">Mike Hawk</td>
+                        <td class="col_4">4/6/2016 20:00</td>
+                    </tr>
+                    <tr>
+                        <td class="col_1">
+                            <div><span class="decrease">$ 500</span></div>
+                            <div class="account_sub">Mike Hawk => Burgershot</div>
+                        </td>
+                        <td class="col_2">Transfer</td>
+                        <td class="col_3">Mike Hawk</td>
+                        <td class="col_4">4/6/2016 20:00</td>
+                    </tr>
+                    <tr>
+                        <td class="col_1">
+                            <div><span class="increase">$ 500</span></div>
+                            <div class="account_sub">Sanitation => Mike Hawk</div>
+                        </td>
+                        <td class="col_2">Transfer</td>
+                        <td class="col_3">Sanitation</td>
+                        <td class="col_4">4/6/2016 20:00</td>
+                    </tr>
+                </table>
+                <hr/>
+                <div class="paging">
+                    <a href="#" class="selected">1</a>
+                    <span class="green">|</span>
+                    <a href="#">2</a>
+                </div>
+            </div>
+            <div class="create_account">
+                <div class="row">
+                    <label for="account_name">Account name</label>
+                    <input type="text" id="account_name"/>
+                </div>
+                <div class="row submit">
+                    <button type="text" id="account_submit">Create</button>
+                </div>
+            </div>
+            <div class="account_list">
+                <table class="accounts">
+                    <tr>
+                        <th class="col_1"></th>
+                        <th class="col_2">Balance</th>
+                        <th class="col_3">Actions</th>
+                    </tr>
+                    <tr>
+                        <td class="col_1">
+                            <div class="account_short">
+                                <a href="#">375-2611-6457-3185</a>
+                            </div>
+                            <div class="account_sub">
+                                Mike's personal account
+                            </div>
+                        </td>
+                        <td class="col_2">$ 1 000 000</td>
+                        <td class="col_3">
+                            <div class="action">
+                                <a href="#" class="withdraw_link">Withdraw</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="deposit_link">Deposit</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="transfer_link">Transfer</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_1">
+                            <div class="account_short">
+                                <a href="#">375-2611-6457-3185</a>
+                            </div>
+                            <div class="account_sub">
+                                Mike's personal account
+                            </div>
+                        </td>
+                        <td class="col_2">$ 1 000 000</td>
+                        <td class="col_3">
+                            <div class="action">
+                                <a href="#" class="withdraw_link">Withdraw</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="deposit_link">Deposit</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="transfer_link">Transfer</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_1">
+                            <div class="account_short">
+                                <a href="#">375-2611-6457-3185</a>
+                            </div>
+                            <div class="account_sub">
+                                Mike's personal account
+                            </div>
+                        </td>
+                        <td class="col_2">$ 1 000 000</td>
+                        <td class="col_3">
+                            <div class="action">
+                                <a href="#" class="withdraw_link">Withdraw</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="deposit_link">Deposit</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="transfer_link">Transfer</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_1">
+                            <div class="account_short">
+                                <a href="#">375-2611-6457-3185</a>
+                            </div>
+                            <div class="account_sub">
+                                Mike's personal account
+                            </div>
+                        </td>
+                        <td class="col_2">$ 1 000 000</td>
+                        <td class="col_3">
+                            <div class="action">
+                                <a href="#" class="withdraw_link">Withdraw</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="deposit_link">Deposit</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="transfer_link">Transfer</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_1">
+                            <div class="account_short">
+                                <a href="#">375-2611-6457-3185</a>
+                            </div>
+                            <div class="account_sub">
+                                Mike's personal account
+                            </div>
+                        </td>
+                        <td class="col_2">$ 1 000 000</td>
+                        <td class="col_3">
+                            <div class="action">
+                                <a href="#" class="withdraw_link">Withdraw</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="deposit_link">Deposit</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="transfer_link">Transfer</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_1">
+                            <div class="account_short">
+                                <a href="#">375-2611-6457-3185</a>
+                            </div>
+                            <div class="account_sub">
+                                Mike's personal account
+                            </div>
+                        </td>
+                        <td class="col_2">$ 1 000 000</td>
+                        <td class="col_3">
+                            <div class="action">
+                                <a href="#" class="withdraw_link">Withdraw</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="deposit_link">Deposit</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="transfer_link">Transfer</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_1">
+                            <div class="account_short">
+                                <a href="#">375-2611-6457-3185</a>
+                            </div>
+                            <div class="account_sub">
+                                Mike's personal account
+                            </div>
+                        </td>
+                        <td class="col_2">$ 1 000 000</td>
+                        <td class="col_3">
+                            <div class="action">
+                                <a href="#" class="withdraw_link">Withdraw</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="deposit_link">Deposit</a>
+                            </div>
+                            <div class="action">
+                                <a href="#" class="transfer_link">Transfer</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="bottom_container">
+            <div class="account_list">
+                <a href="#" id="create_account">Create account</a>
+                <span class="green">|</span>
+                <a href="#">Exit bank</a>
+            </div>
+            <div class="create_account">
+                <a href="#" class="account_list_show">Back</a>
+                <span class="green">|</span>
+                <a href="#">Exit bank</a>
+            </div>
+            <div class="deposit">
+                <a href="#" class="account_list_show">Back</a>
+                <span class="green">|</span>
+                <a href="#">Exit bank</a>
+            </div>
+            <div class="withdraw">
+                <a href="#" class="account_list_show">Back</a>
+                <span class="green">|</span>
+                <a href="#">Exit bank</a>
+            </div>
+            <div class="transfer">
+                <a href="#" class="account_list_show">Back</a>
+                <span class="green">|</span>
+                <a href="#">Exit bank</a>
+            </div>
+            <div class="account_detail">
+                <a href="#" class="account_list_show">Back</a>
+                <span class="green">|</span>
+                <a href="#" class="account_transfer transfer_link">Transfer</a>
+                <span class="green">|</span>
+                <a href="#" class="account_withdraw withdraw_link">Withdraw</a>
+                <span class="green">|</span>
+                <a href="#" class="account_withdraw deposit_link">Deposit</a>
+                <span class="green">|</span>
+                <a href="#">Exit bank</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

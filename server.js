@@ -39,15 +39,68 @@ onNet('mrp:bankin:server:createAccount', (source, data, uuid) => {
     let exec = async () => {
         let generatedAccount = await generateAccountNumber();
         let char = MRP_SERVER.getSpawnedCharacter(source);
-        MRP_SERVER.create('banking_account', {
-            accountNumber: generatedAccount,
-            name: data.account_name,
-            owner: char._id,
-            default: true,
-            money: 0
-        }, (result) => {
-            emitNet('mrp:bankin:server:createAccount:response', source, result, uuid);
-        });
+
+        let defaultAcc = false;
+        if (data.type == 'personal') {
+            //first check if I have a personal account already to do a default one
+            MRP_SERVER.count('banking_account', {
+                owner: char._id,
+                type: 'personal',
+                default: true
+            }, (count) => {
+                if (count > 0)
+                    defaultAcc = false;
+                else
+                    defaultAcc = true;
+
+                MRP_SERVER.create('banking_account', {
+                    accountNumber: generatedAccount,
+                    name: data.account_name,
+                    type: data.type,
+                    owner: char._id,
+                    default: defaultAcc,
+                    money: 0
+                }, (result) => {
+                    emitNet('mrp:bankin:server:createAccount:response', source, result, uuid);
+                });
+            });
+        } else {
+            MRP_SERVER.create('banking_account', {
+                accountNumber: generatedAccount,
+                name: data.account_name,
+                type: data.type,
+                owner: char._id,
+                default: defaultAcc,
+                money: 0
+            }, (result) => {
+                emitNet('mrp:bankin:server:createAccount:response', source, result, uuid);
+            });
+        }
     };
     exec();
+});
+
+onNet('mrp:bankin:server:getAccounts', (source, data, uuid) => {
+    let char = MRP_SERVER.getSpawnedCharacter(source);
+    exports["mrp_core"].log(`Getting bank accounts for [${source}] [${JSON.stringify(data)}]`);
+    if (char) {
+        MRP_SERVER.count('banking_account', {
+            owner: char._id,
+            type: data.type
+        }, (count) => {
+            MRP_SERVER.find('banking_account', {
+                owner: char._id,
+                type: data.type
+            }, undefined, undefined, (result) => {
+                let retData = {
+                    totalCount: count,
+                    result: result
+                };
+                exports["mrp_core"].log(`Found total accounts [${count}]`);
+                emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
+            });
+        });
+    } else {
+        emitNet('mrp:bankin:server:getAccounts:response', source, [], uuid);
+    }
 });

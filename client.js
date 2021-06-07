@@ -132,3 +132,10 @@ on('__cfx_nui:create_account', (data, cb) => {
         cb(result);
     });
 });
+
+RegisterNuiCallbackType('get_all_accounts');
+on('__cfx_nui:get_all_accounts', (data, cb) => {
+    MRP_CLIENT.TriggerServerCallback('mrp:bankin:server:getAccounts', [data], (result) => {
+        cb(result);
+    });
+});

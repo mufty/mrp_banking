@@ -48,11 +48,11 @@
             <div class="account_list">
                 Choose account type
                 <div class="account_types">
-                    <a href="#" class="personal selected">Personal</a>
+                    <a href="#" class="personal selected" id="personal">Personal</a>
                     <span class="green">|</span>
-                    <a href="#" class="business">Business</a>
+                    <a href="#" class="business" id="business">Business</a>
                     <span class="green">|</span>
-                    <a href="#" class="business">Savings</a>
+                    <a href="#" class="business" id="savings">Savings</a>
                 </div>
             </div>
         </div>
@@ -169,6 +169,7 @@
                         <input type="submit" id="account_submit" value="Create"/>
                     </div>
                 </form>
+                <div class="row"><span class="error"></span></div>
             </div>
             <div class="account_list">
                 <table class="accounts">
@@ -332,6 +333,12 @@
                         </td>
                     </tr>
                 </table>
+                <hr/>
+                <div class="paging">
+                    <a href="#" class="selected">1</a>
+                    <span class="green">|</span>
+                    <a href="#">2</a>
+                </div>
             </div>
         </div>
         <div class="bottom_container">

@@ -163,6 +163,10 @@ input[type=text] {
     margin-top: 20px;
 }
 
+.error {
+    color: #D53621
+}
+
 .row.submit {
     text-align: center;
 }

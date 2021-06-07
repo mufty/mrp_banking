@@ -89,7 +89,8 @@ async function deleteProps(wallet, id) {
 on('mrp:banking:ui:show', () => {
     SetNuiFocus(true, true);
     SendNuiMessage(JSON.stringify({
-        type: 'show'
+        type: 'show',
+        character: MRP_CLIENT.GetPlayerData()
     }));
     playBankAnim();
     playWalletProps();
@@ -136,6 +137,28 @@ on('__cfx_nui:create_account', (data, cb) => {
 RegisterNuiCallbackType('get_all_accounts');
 on('__cfx_nui:get_all_accounts', (data, cb) => {
     MRP_CLIENT.TriggerServerCallback('mrp:bankin:server:getAccounts', [data], (result) => {
+        cb(result);
+    });
+});
+
+RegisterNuiCallbackType('withdraw');
+on('__cfx_nui:withdraw', (data, cb) => {
+    MRP_CLIENT.TriggerServerCallback('mrp:bankin:server:withdraw', [data], (result) => {
+        cb(result);
+    });
+});
+
+RegisterNuiCallbackType('deposit');
+on('__cfx_nui:deposit', (data, cb) => {
+    MRP_CLIENT.TriggerServerCallback('mrp:bankin:server:deposit', [data], (result) => {
+        cb(result);
+    });
+});
+
+RegisterNuiCallbackType('transfer');
+on('__cfx_nui:transfer', (data, cb) => {
+    console.log("transfer client");
+    MRP_CLIENT.TriggerServerCallback('mrp:bankin:server:transfer', [data], (result) => {
         cb(result);
     });
 });

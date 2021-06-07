@@ -5,6 +5,8 @@ $(document).ready(() => {
         currency: '$'
     };
 
+    let character;
+
     $('body').hide();
 
     $('.account_list .account_types a').click(function() {
@@ -49,10 +51,9 @@ $(document).ready(() => {
             '<th class="col_3">Actions</th>' +
             '</tr>';
         let headers = $(html);
-        let table = $('table.accounts');
+        let table = $('.account_list table.accounts');
         table.empty();
         table.append(headers);
-        console.log(data);
         for (let account of data.result) {
             html = '<tr>' +
                 '<td class="col_1">' +
@@ -76,7 +77,23 @@ $(document).ready(() => {
                 '</td>' +
                 '</tr>';
             let row = $(html);
-            //TODO actions
+
+            row.find('.account_short a').click(() => {
+                showAccountDetails(account);
+            });
+
+            row.find('.withdraw_link').click(() => {
+                showWithdraw(account);
+            });
+
+            row.find('.deposit_link').click(() => {
+                showDeposit(account);
+            });
+
+            row.find('.transfer_link').click(() => {
+                showTransfer(account);
+            });
+
             table.append(row);
         }
 
@@ -109,7 +126,7 @@ $(document).ready(() => {
                     '<td class="col_3"></td>' +
                     '</tr>';
 
-                $('table.accounts').html(html);
+                $('.account_list table.accounts').html(html);
             } else {
                 createAccountTable(data);
             }
@@ -127,7 +144,31 @@ $(document).ready(() => {
         showAccountList();
     });
 
-    function showAccountDetails() {
+    function showAccountDetails(account) {
+        updateUniversalHeader(account, $('.top_sub .account_detail'));
+
+        $('.bottom_container .account_detail a').unbind('click');
+
+        $('.bottom_container .account_detail a.transfer_link').click(() => {
+            showTransfer(account);
+        });
+
+        $('.bottom_container .account_detail a.withdraw_link').click(() => {
+            showWithdraw(account);
+        });
+
+        $('.bottom_container .account_detail a.deposit_link').click(() => {
+            showDeposit(account);
+        });
+
+        $('.bottom_container .account_detail a.account_list_show').click(() => {
+            showAccountList();
+        });
+
+        $('.bottom_container .account_detail a.exit').click(() => {
+            exitBanking();
+        });
+
         $('.account_list').hide();
         $('.deposit').hide();
         $('.create_account').hide();
@@ -136,11 +177,45 @@ $(document).ready(() => {
         $('.transfer').hide();
     }
 
-    $('.account_short a').click(function() {
+    /*$('.account_short a').click(function() {
         showAccountDetails();
-    });
+    });*/
 
-    function showDeposit() {
+    function updateUniversalHeader(account, elm) {
+        let html = account.accountNumber +
+            '<div class="account_types">' +
+            '<span class="account_name">' + account.name + '</span>' +
+            '</div>';
+        elm.html(html);
+    }
+
+    function showDeposit(account) {
+        updateUniversalHeader(account, $('.top_sub .deposit'));
+
+        $('.deposit .balance').html(config.currency + ' ' + numberWithSpaces(account.money));
+        $('.deposit .cash').html(config.currency + ' ' + numberWithSpaces(character.stats.cash));
+
+        $("#deposit_form").validate({
+            rules: {
+                deposit_amount: {
+                    required: true,
+                    range: [0, character.stats.cash]
+                }
+            },
+            submitHandler: function(form) {
+                let values = formToJson($(form).serializeArray());
+                values.account = account;
+                $.post('https://mrp_banking/deposit', JSON.stringify(values), (data) => {
+                    if (data.modifiedCount > 0) {
+                        character.stats.cash -= parseInt(values.deposit_amount);
+                        showAccountList();
+                    } else {
+                        console.log("Failed to deposit money");
+                    }
+                });
+            }
+        });
+
         $('.account_list').hide();
         $('.withdraw').hide();
         $('.deposit').show();
@@ -149,11 +224,37 @@ $(document).ready(() => {
         $('.transfer').hide();
     }
 
-    $('a.deposit_link').click(function() {
+    /*$('a.deposit_link').click(function() {
         showDeposit();
-    });
+    });*/
 
-    function showWithdraw() {
+    function showWithdraw(account) {
+        updateUniversalHeader(account, $('.top_sub .withdraw'));
+
+        $('.withdraw .balance').html(config.currency + ' ' + numberWithSpaces(account.money));
+        $('.withdraw .cash').html(config.currency + ' ' + numberWithSpaces(character.stats.cash));
+
+        $("#withdraw_form").validate({
+            rules: {
+                withdraw_amount: {
+                    required: true,
+                    range: [0, account.money]
+                }
+            },
+            submitHandler: function(form) {
+                let values = formToJson($(form).serializeArray());
+                values.account = account;
+                $.post('https://mrp_banking/withdraw', JSON.stringify(values), (data) => {
+                    if (data.modifiedCount > 0) {
+                        character.stats.cash += parseInt(values.withdraw_amount);
+                        showAccountList();
+                    } else {
+                        console.log("Failed to withdraw money");
+                    }
+                });
+            }
+        });
+
         $('.account_list').hide();
         $('.withdraw').show();
         $('.deposit').hide();
@@ -162,11 +263,39 @@ $(document).ready(() => {
         $('.transfer').hide();
     }
 
-    $('a.withdraw_link').click(function() {
+    /*$('a.withdraw_link').click(function() {
         showWithdraw();
-    });
+    });*/
 
-    function showTransfer() {
+    function showTransfer(account) {
+        updateUniversalHeader(account, $('.top_sub .transfer'));
+
+        $('.transfer .balance').html(config.currency + ' ' + numberWithSpaces(account.money));
+
+        $("#transfer_form").validate({
+            rules: {
+                transfer_amount: {
+                    required: true,
+                    range: [0, account.money]
+                },
+                transfer_account: {
+                    required: true
+                }
+            },
+            submitHandler: function(form) {
+                let values = formToJson($(form).serializeArray());
+                values.account = account;
+                $.post('https://mrp_banking/transfer', JSON.stringify(values), (data) => {
+                    if (data.modifiedCount > 0) {
+                        showAccountList();
+                    } else {
+                        //todo show error
+                        console.log("Failed to transfer money");
+                    }
+                });
+            }
+        });
+
         $('.account_list').hide();
         $('.withdraw').hide();
         $('.deposit').hide();
@@ -175,9 +304,9 @@ $(document).ready(() => {
         $('.transfer').show();
     }
 
-    $('a.transfer_link').click(function() {
+    /*$('a.transfer_link').click(function() {
         showTransfer();
-    });
+    });*/
 
     function exitBanking() {
         $('.account_list').show();
@@ -229,6 +358,7 @@ $(document).ready(() => {
         switch (data.type) {
             case "show":
                 $('body').show();
+                character = data.character;
                 showAccountList();
                 break;
             case "close":

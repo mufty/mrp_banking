@@ -104,3 +104,92 @@ onNet('mrp:bankin:server:getAccounts', (source, data, uuid) => {
         emitNet('mrp:bankin:server:getAccounts:response', source, [], uuid);
     }
 });
+
+onNet('mrp:bankin:server:withdraw', (source, data, uuid) => {
+    let char = MRP_SERVER.getSpawnedCharacter(source);
+    if (char) {
+        data.account.money -= parseInt(data.withdraw_amount);
+        MRP_SERVER.update('banking_account', data.account, {
+            _id: data.account._id
+        }, null, (result) => {
+            if (result.modifiedCount > 0) {
+                exports["mrp_core"].log('Bank account updated after withdraw!');
+                char.stats.cash += parseInt(data.withdraw_amount);
+                emit('mrp:updateCharacter', char);
+                emitNet('mrp:updateCharacter', source, char);
+            }
+            emitNet('mrp:bankin:server:withdraw:response', source, result, uuid);
+        });
+    }
+});
+
+onNet('mrp:bankin:server:deposit', (source, data, uuid) => {
+    //TODO add transaction logs
+    let char = MRP_SERVER.getSpawnedCharacter(source);
+    if (char) {
+        data.account.money += parseInt(data.deposit_amount);
+        MRP_SERVER.update('banking_account', data.account, {
+            _id: data.account._id
+        }, null, (result) => {
+            if (result.modifiedCount > 0) {
+                exports["mrp_core"].log('Bank account updated after deposit!');
+                char.stats.cash -= parseInt(data.deposit_amount);
+                emit('mrp:updateCharacter', char);
+                emitNet('mrp:updateCharacter', source, char);
+            }
+            emitNet('mrp:bankin:server:deposit:response', source, result, uuid);
+        });
+    }
+});
+
+onNet('mrp:bankin:server:transfer', (source, data, uuid) => {
+    MRP_SERVER.read('banking_account', {
+        accountNumber: data.transfer_account
+    }, (transferAccount) => {
+        if (!transferAccount) {
+            emitNet('mrp:bankin:server:transfer:response', source, {
+                modifiedCount: 0
+            }, uuid);
+        } else {
+            data.account.money -= parseInt(data.transfer_amount);
+            MRP_SERVER.update('banking_account', data.account, {
+                _id: data.account._id
+            }, null, (result) => {
+                if (result.modifiedCount <= 0) {
+                    emitNet('mrp:bankin:server:transfer:response', source, {
+                        modifiedCount: 0
+                    }, uuid);
+                    return;
+                }
+
+                transferAccount.money += parseInt(data.transfer_amount);
+                MRP_SERVER.update('banking_account', transferAccount, {
+                    _id: transferAccount._id
+                }, null, (res) => {
+                    if (res.modifiedCount > 0) {
+                        exports["mrp_core"].log('Bank account updated after transfer!');
+                    }
+                    emitNet('mrp:bankin:server:transfer:response', source, result, uuid);
+                });
+            });
+        }
+    });
+});
+
+RegisterCommand('spawnCash', (source, args) => {
+    let playerId = args[0];
+    let ammount = args[1];
+    if (!playerId)
+        return;
+
+    if (!ammount)
+        return;
+
+    let char = MRP_SERVER.getSpawnedCharacter(playerId);
+    if (char) {
+        char.stats.cash += parseInt(ammount);
+        MRP_SERVER.updateSpawnedChar(playerId, char);
+        emit('mrp:updateCharacter', char);
+        emitNet('mrp:updateCharacter', playerId, char);
+    }
+}, true);

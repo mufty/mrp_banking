@@ -1,8 +1,9 @@
 $(document).ready(() => {
     let config = {
         skip: 0,
-        limit: 9,
-        currency: '$'
+        limit: 4,
+        currency: '$',
+        dateFormat: 'dd/MM/yyyy HH:mm'
     };
 
     let character;
@@ -20,10 +21,10 @@ $(document).ready(() => {
         $(this).toggleClass('selected');
     });
 
-    $('.paging a').click(function() {
+    /*$('.paging a').click(function() {
         $('.paging a.selected').removeClass('selected');
         $(this).toggleClass('selected');
-    });
+    });*/
 
     function showCreateAccount() {
         $('.account_list').hide();
@@ -79,6 +80,7 @@ $(document).ready(() => {
             let row = $(html);
 
             row.find('.account_short a').click(() => {
+                currentSkip = 0;
                 showAccountDetails(account);
             });
 
@@ -97,8 +99,8 @@ $(document).ready(() => {
             table.append(row);
         }
 
-        $('.paging').empty();
-        if (data.totalCount > config.limit && redoPaging) {
+        //$('.paging').empty();
+        /*if (data.totalCount > config.limit && redoPaging) {
             let pages = Math.floor(data.totalCount / config.limit) + 1;
             for (let page = 1; page <= pages; page++) {
                 html = '<a href="#" class="selected">' + page + '</a>';
@@ -107,7 +109,7 @@ $(document).ready(() => {
                 let pageElm = $(html);
                 $('.account_list .paging').append(pageElm);
             }
-        }
+        }*/
     }
 
     function showAccountList() {
@@ -144,8 +146,79 @@ $(document).ready(() => {
         showAccountList();
     });
 
+    let currentSkip = 0;
+    let currentAccount;
+
+    $('.account_detail .paging .back').click(() => {
+        if (currentSkip > 0)
+            currentSkip = currentSkip - config.limit;
+        else
+            currentSkip = 0;
+        showAccountDetails(currentAccount);
+    });
+
+    $('.account_detail .paging .forward').click(() => {
+        currentSkip = currentSkip + config.limit;
+        showAccountDetails(currentAccount);
+    });
+
+    function createTransactionTable(data) {
+        let html = '<tr>' +
+            '<th class="col_1"></th>' +
+            '<th class="col_2">Type</th>' +
+            '<th class="col_3">Author</th>' +
+            '<th class="col_4">Date</th>' +
+            '</tr>';
+        let headers = $(html);
+        let table = $('.account_detail table.accounts');
+        table.empty();
+        table.append(headers);
+        for (let doc of data) {
+            html = '<tr>' +
+                '<td class="col_1">';
+
+            if (doc.type != "transfer") {
+                html += '<span class="' + (doc.sum > 0 ? 'increase' : 'decrease') + '">' + config.currency + ' ' + numberWithSpaces(Math.abs(doc.sum)) + '</span>';
+            } else {
+                html += '<div><span class="' + (doc.sum > 0 ? 'increase' : 'decrease') + '">' + config.currency + ' ' + numberWithSpaces(Math.abs(doc.sum)) + '</span></div>';
+                html += '<div class="account_sub">' + doc.fromAccount[0].name + ' => ' + doc.toAccount[0].name + ' (' + doc.note + ')</div>';
+            }
+
+            let date = new Date(doc.timestamp);
+            let formatedDate = $.format.date(date, config.dateFormat);
+
+            html += '</td>' +
+                '<td class="col_2">' + doc.type + '</td>' +
+                '<td class="col_3">' + doc.authorChar[0].name + ' ' + doc.authorChar[0].surname + '</td>' +
+                '<td class="col_4">' + formatedDate + '</td>' +
+                '</tr>';
+            let row = $(html);
+            table.append(row);
+        }
+    }
+
     function showAccountDetails(account) {
+        currentAccount = account;
         updateUniversalHeader(account, $('.top_sub .account_detail'));
+
+        $.post('https://mrp_banking/get_all_transactions', JSON.stringify({
+            account: account._id,
+            skip: currentSkip,
+            limit: config.limit
+        }), (result) => {
+            $('.account_detail .paging').hide();
+            if (result && result.length == 1) {
+                result = result[0];
+                let count = result.docCount[0].count;
+                if (count > config.limit) {
+                    //need paging
+                    $('.account_detail .paging').show();
+                }
+
+                let documents = result.data;
+                createTransactionTable(documents);
+            }
+        });
 
         $('.bottom_container .account_detail a').unbind('click');
 

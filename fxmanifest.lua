@@ -14,6 +14,7 @@ dependencies {
 files {
     'ui/fonts/coolvetica_rg.ttf',
     'ui/imgs/fleeca_logo.png',
+    'ui/lib/jquery-dateformat.min.js',
     'ui/main.js',
     'ui/style.css',
     'ui/index.html',

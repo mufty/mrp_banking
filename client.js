@@ -157,8 +157,14 @@ on('__cfx_nui:deposit', (data, cb) => {
 
 RegisterNuiCallbackType('transfer');
 on('__cfx_nui:transfer', (data, cb) => {
-    console.log("transfer client");
     MRP_CLIENT.TriggerServerCallback('mrp:bankin:server:transfer', [data], (result) => {
+        cb(result);
+    });
+});
+
+RegisterNuiCallbackType('get_all_transactions');
+on('__cfx_nui:get_all_transactions', (data, cb) => {
+    MRP_CLIENT.TriggerServerCallback('mrp:bankin:server:getTransactions', [data], (result) => {
         cb(result);
     });
 });

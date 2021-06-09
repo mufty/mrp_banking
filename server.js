@@ -282,6 +282,16 @@ onNet('mrp:bankin:server:transfer', (source, data, uuid) => {
     });
 });
 
+onNet('mrp:bankin:server:pay:cash', (source, price) => {
+    let char = MRP_SERVER.getSpawnedCharacter(source);
+    if (char) {
+        char.stats.cash -= parseInt(price);
+        MRP_SERVER.updateSpawnedChar(source, char);
+        emit('mrp:updateCharacter', char);
+        emitNet('mrp:updateCharacter', source, char);
+    }
+});
+
 RegisterCommand('spawnCash', (source, args) => {
     let playerId = args[0];
     let ammount = args[1];

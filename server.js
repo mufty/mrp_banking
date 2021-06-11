@@ -309,3 +309,29 @@ RegisterCommand('spawnCash', (source, args) => {
         emitNet('mrp:updateCharacter', playerId, char);
     }
 }, true);
+
+RegisterCommand('giveCash', (source, args) => {
+    let targetId = args[0];
+    let ammount = args[1];
+    if (!targetId)
+        return;
+
+    if (!ammount)
+        return;
+
+    let fromChar = MRP_SERVER.getSpawnedCharacter(source);
+    let toChar = MRP_SERVER.getSpawnedCharacter(targetId);
+    if (fromChar && toChar) {
+        fromChar.stats.cash -= parseInt(ammount);
+        toChar.stats.cash += parseInt(ammount);
+
+
+        MRP_SERVER.updateSpawnedChar(source, fromChar);
+        emit('mrp:updateCharacter', fromChar);
+        emitNet('mrp:updateCharacter', source, fromChar);
+
+        MRP_SERVER.updateSpawnedChar(targetId, toChar);
+        emit('mrp:updateCharacter', toChar);
+        emitNet('mrp:updateCharacter', targetId, toChar);
+    }
+});

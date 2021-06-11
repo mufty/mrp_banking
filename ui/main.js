@@ -209,8 +209,8 @@ $(document).ready(() => {
             $('.account_detail .paging').hide();
             if (result && result.length == 1) {
                 result = result[0];
-                let count = result.docCount[0].count;
-                if (count > config.limit) {
+                let count = result.docCount[0] ? result.docCount[0].count : 0;
+                if (count != 0 && count > config.limit) {
                     //need paging
                     $('.account_detail .paging').show();
                 }

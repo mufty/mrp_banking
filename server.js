@@ -316,6 +316,10 @@ RegisterCommand('giveCash', (source, args) => {
     if (!targetId)
         return;
 
+    //can't give to self to spawn money
+    if (source == target)
+        return;
+
     if (!ammount)
         return;
 

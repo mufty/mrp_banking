@@ -124,7 +124,7 @@ setInterval(() => {
 RegisterNuiCallbackType('close');
 on('__cfx_nui:close', (data, cb) => {
     SetNuiFocus(false, false);
-    cb();
+    cb({});
 });
 
 RegisterNuiCallbackType('create_account');

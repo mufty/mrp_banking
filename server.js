@@ -221,7 +221,7 @@ onNet('mrp:bankin:server:deposit', (source, data, uuid) => {
     }
 });
 
-onNet('mrp:bankin:server:transfer', (source, data, uuid) => {
+function transfer(source, data, uuid) {
     let char = MRP_SERVER.getSpawnedCharacter(source);
     MRP_SERVER.read('banking_account', {
         accountNumber: data.transfer_account
@@ -280,6 +280,36 @@ onNet('mrp:bankin:server:transfer', (source, data, uuid) => {
             });
         }
     });
+}
+
+onNet('mrp:bankin:server:transfer', (source, data, uuid) => {
+    if (data.transfer_account.indexOf("-") == -1) {
+        //this is a state ID
+        const agg = [{
+            '$lookup': {
+                'from': 'character',
+                'localField': 'owner',
+                'foreignField': '_id',
+                'as': 'ownerObj'
+            }
+        }, {
+            '$match': {
+                'default': true,
+                'ownerObj.stateId': parseInt(data.transfer_account)
+            }
+        }];
+        MRP_SERVER.aggregate('banking_account', agg, (documents) => {
+            if (documents && documents.length > 0) {
+                let accountNumber = documents[0].accountNumber;
+                data.transfer_account = accountNumber;
+                transfer(source, data, uuid);
+            } else {
+                transfer(source, data, uuid);
+            }
+        });
+    } else {
+        transfer(source, data, uuid);
+    }
 });
 
 onNet('mrp:bankin:server:pay:cash', (source, price) => {

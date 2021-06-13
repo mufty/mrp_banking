@@ -310,6 +310,16 @@ RegisterCommand('spawnCash', (source, args) => {
     }
 }, true);
 
+onNet('mrp:bankin:server:add:cash', (source, amount) => {
+    let char = MRP_SERVER.getSpawnedCharacter(source);
+    if (char) {
+        char.stats.cash += parseInt(amount);
+        MRP_SERVER.updateSpawnedChar(source, char);
+        emit('mrp:updateCharacter', char);
+        emitNet('mrp:updateCharacter', source, char);
+    }
+});
+
 RegisterCommand('giveCash', (source, args) => {
     let targetId = args[0];
     let ammount = args[1];

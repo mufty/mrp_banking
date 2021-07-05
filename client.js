@@ -58,12 +58,6 @@ function nearBank() {
     }
 }
 
-function displayHelpText(str) {
-    BeginTextCommandDisplayHelp("STRING");
-    AddTextComponentString(str);
-    EndTextCommandDisplayHelp(0, false, true, -1);
-}
-
 function playBankAnim() {
     emit("mrp:lua:taskPlayAnim", PlayerPedId(), "random@atmrobberygen", "a_atm_mugging", 8.0, 3.0, 2000, 0, 1, false, false, false);
 }
@@ -98,14 +92,14 @@ on('mrp:banking:ui:show', () => {
 
 setInterval(() => {
     if (nearBank()) {
-        displayHelpText(config.helpText1);
+        MRP_CLIENT.displayHelpText(config.helpText1);
 
         if (IsControlJustPressed(1, 38)) {
             emit('mrp:banking:ui:show');
         }
     } else if (nearATM()) {
         if (config.useATMS) {
-            displayHelpText(config.helpText2);
+            MRP_CLIENT.displayHelpText(config.helpText2);
 
             if (IsControlJustPressed(1, 38)) {
                 emit('mrp:banking:ui:show');

@@ -82,6 +82,7 @@ async function deleteProps(wallet, id) {
 
 on('mrp:banking:ui:show', () => {
     SetNuiFocus(true, true);
+    MRP_CLIENT.setPlayerMetadata("inMenu", true);
     SendNuiMessage(JSON.stringify({
         type: 'show',
         character: MRP_CLIENT.GetPlayerData()
@@ -107,6 +108,7 @@ setInterval(() => {
 
             if (IsControlJustPressed(1, 322)) {
                 SetNuiFocus(false, false);
+                MRP_CLIENT.setPlayerMetadata("inMenu", false);
                 SendNuiMessage(JSON.stringify({
                     type: 'close'
                 }));
@@ -117,6 +119,7 @@ setInterval(() => {
 
 RegisterNuiCallbackType('close');
 on('__cfx_nui:close', (data, cb) => {
+    MRP_CLIENT.setPlayerMetadata("inMenu", false);
     SetNuiFocus(false, false);
     cb({});
 });

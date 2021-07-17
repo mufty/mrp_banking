@@ -44,7 +44,7 @@ onNet('mrp:bankin:server:createAccount', (source, data, uuid) => {
         if (data.type == 'personal') {
             //first check if I have a personal account already to do a default one
             MRP_SERVER.count('banking_account', {
-                owner: char._id,
+                owner: data.owner || char._id,
                 type: 'personal',
                 default: true
             }, (count) => {
@@ -57,7 +57,7 @@ onNet('mrp:bankin:server:createAccount', (source, data, uuid) => {
                     accountNumber: generatedAccount,
                     name: data.account_name,
                     type: data.type,
-                    owner: char._id,
+                    owner: data.owner || char._id,
                     default: defaultAcc,
                     money: 0
                 }, (result) => {
@@ -69,7 +69,7 @@ onNet('mrp:bankin:server:createAccount', (source, data, uuid) => {
                 accountNumber: generatedAccount,
                 name: data.account_name,
                 type: data.type,
-                owner: char._id,
+                owner: data.owner || char._id,
                 default: defaultAcc,
                 money: 0
             }, (result) => {
@@ -143,14 +143,18 @@ onNet('mrp:bankin:server:getAccounts', (source, data, uuid) => {
     let char = MRP_SERVER.getSpawnedCharacter(source);
     exports["mrp_core"].log(`Getting bank accounts for [${source}] [${JSON.stringify(data)}]`);
     if (char) {
-        MRP_SERVER.count('banking_account', {
-            owner: char._id,
-            type: data.type
-        }, (count) => {
-            MRP_SERVER.find('banking_account', {
+        let query = {
+            $or: [{
                 owner: char._id,
                 type: data.type
-            }, undefined, undefined, (result) => {
+            }, {
+                type: data.type,
+                access: char._id
+            }]
+        };
+
+        MRP_SERVER.count('banking_account', query, (count) => {
+            MRP_SERVER.find('banking_account', query, undefined, undefined, (result) => {
                 let retData = {
                     totalCount: count,
                     result: result

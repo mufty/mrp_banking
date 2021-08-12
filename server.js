@@ -206,11 +206,7 @@ onNet('mrp:bankin:server:getAccounts', (source, data, uuid) => {
                                 processedEmployments++;
                             } else {
                                 processedEmployments++;
-
-                                if (processedEmployments >= totalEmployments - 1) {
-                                    emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
-                                }
-
+                                //TODO this may be an issue if not returning anything for last account
                                 //emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
                             }
                         });

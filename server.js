@@ -206,7 +206,7 @@ onNet('mrp:bankin:server:getAccounts', (source, data, uuid) => {
                                 processedEmployments++;
                             } else {
                                 processedEmployments++;
-                                //TODO this may be an issue if not returning anything for last account
+                                //TODO this may be an issue if not returning anything for last account as there is a listener hanging
                                 //emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
                             }
                         });

@@ -70,7 +70,7 @@ onNet('mrp:bankin:server:createAccount', (source, data, uuid) => {
                 name: data.account_name,
                 type: data.type,
                 owner: data.owner || char._id,
-                default: defaultAcc,
+                default: defaultAcc || data.default,
                 money: 0
             }, (result) => {
                 emitNet('mrp:bankin:server:createAccount:response', source, result, uuid);
@@ -223,6 +223,39 @@ onNet('mrp:bankin:server:deposit', (source, data, uuid) => {
             emitNet('mrp:bankin:server:deposit:response', source, result, uuid);
         });
     }
+});
+
+onNet('mrp:bankin:server:deposit:byowner', (data) => {
+    MRP_SERVER.read('banking_account', {
+        owner: data.owner,
+        default: true
+    }, (transferAccount) => {
+        if (!transferAccount) {
+            console.log(`No account found for id [${JSON.stringify(data.owner)}]`);
+            return;
+        }
+
+        transferAccount.money += data.ammount;
+
+        MRP_SERVER.update('banking_account', transferAccount, {
+            _id: transferAccount._id
+        }, null, (result) => {
+            if (result.modifiedCount > 0) {
+                //create transaction log
+                MRP_SERVER.create('banking_transaction', {
+                    accountNumber: transferAccount._id,
+                    type: 'deposit',
+                    author: data.origin,
+                    sum: parseInt(data.ammount),
+                    timestamp: Date.now()
+                }, (r) => {
+                    exports["mrp_core"].log('Created transaction log for deposit');
+                });
+
+                exports["mrp_core"].log('Bank account updated after deposit!');
+            }
+        });
+    });
 });
 
 function transfer(source, data, uuid) {

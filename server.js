@@ -101,6 +101,13 @@ onNet('mrp:bankin:server:getTransactions', (source, data, uuid) => {
         }
     }, {
         '$lookup': {
+            'from': 'business',
+            'localField': 'author',
+            'foreignField': '_id',
+            'as': 'business'
+        }
+    }, {
+        '$lookup': {
             'from': 'banking_account',
             'localField': 'to',
             'foreignField': '_id',
@@ -153,16 +160,77 @@ onNet('mrp:bankin:server:getAccounts', (source, data, uuid) => {
             }]
         };
 
-        MRP_SERVER.count('banking_account', query, (count) => {
-            MRP_SERVER.find('banking_account', query, undefined, undefined, (result) => {
+        if (data.type == "business") {
+            //check employee bank access
+            MRP_SERVER.read('employment', {
+                char: char._id
+            }, (empRes) => {
                 let retData = {
-                    totalCount: count,
-                    result: result
+                    totalCount: 0,
+                    result: []
                 };
-                exports["mrp_core"].log(`Found total accounts [${count}]`);
-                emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
+                if (empRes) {
+                    let totalEmployments = 0;
+                    if (empRes && empRes.employment)
+                        totalEmployments = empRes.employment.length;
+                    let processedEmployments = 0;
+                    for (let i in empRes.employment) {
+                        let emp = empRes.employment[i];
+                        let empRole = emp.role;
+                        MRP_SERVER.read('business', {
+                            _id: emp.business
+                        }, (busRes) => {
+                            if (busRes) {
+                                for (let role of busRes.roles) {
+                                    if (role.name == empRole && role.hasBankAccess) {
+                                        //has access to bank account
+                                        MRP_SERVER.read('banking_account', {
+                                            owner: emp.business
+                                        }, (empAcc) => {
+                                            if (empAcc) {
+                                                if (!retData.result)
+                                                    retData.result = [];
+
+                                                retData.totalCount++;
+                                                retData.result.push(empAcc);
+                                            }
+
+                                            if (processedEmployments >= totalEmployments - 1) {
+                                                emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
+                                            }
+                                        });
+                                        break;
+                                    }
+                                }
+
+                                processedEmployments++;
+                            } else {
+                                processedEmployments++;
+
+                                if (processedEmployments >= totalEmployments - 1) {
+                                    emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
+                                }
+
+                                //emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
+                            }
+                        });
+                    }
+                } else {
+                    emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
+                }
             });
-        });
+        } else {
+            MRP_SERVER.count('banking_account', query, (count) => {
+                MRP_SERVER.find('banking_account', query, undefined, undefined, (result) => {
+                    let retData = {
+                        totalCount: count,
+                        result: result
+                    };
+                    exports["mrp_core"].log(`Found total accounts [${count}]`);
+                    emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
+                });
+            });
+        }
     } else {
         emitNet('mrp:bankin:server:getAccounts:response', source, [], uuid);
     }

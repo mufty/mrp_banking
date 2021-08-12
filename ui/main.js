@@ -187,9 +187,19 @@ $(document).ready(() => {
             let date = new Date(doc.timestamp);
             let formatedDate = $.format.date(date, config.dateFormat);
 
+            let authorName = "";
+
+            if (doc.authorChar && doc.authorChar.length > 0) {
+                authorName = doc.authorChar[0].name + ' ' + doc.authorChar[0].surname;
+            }
+
+            if (doc.business && doc.business.length > 0) {
+                authorName = doc.business[0].name;
+            }
+
             html += '</td>' +
                 '<td class="col_2">' + doc.type + '</td>' +
-                '<td class="col_3">' + doc.authorChar[0].name + ' ' + doc.authorChar[0].surname + '</td>' +
+                '<td class="col_3">' + authorName + '</td>' +
                 '<td class="col_4">' + formatedDate + '</td>' +
                 '</tr>';
             let row = $(html);

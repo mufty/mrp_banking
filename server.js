@@ -173,20 +173,27 @@ onNet('mrp:bankin:server:getAccounts', (source, data, uuid) => {
                     let totalEmployments = 0;
                     if (empRes && empRes.employment)
                         totalEmployments = empRes.employment.length;
+
+                    console.debug(`Total employments [${totalEmployments}]`);
                     let processedEmployments = 0;
                     for (let i in empRes.employment) {
                         let emp = empRes.employment[i];
                         let empRole = emp.role;
+                        console.debug(`Get business for role [${empRole}]`);
                         MRP_SERVER.read('business', {
                             _id: emp.business
                         }, (busRes) => {
                             if (busRes) {
                                 for (let role of busRes.roles) {
                                     if (role.name == empRole && role.hasBankAccess) {
+                                        console.debug(`Has bank account for role [${empRole}]`);
                                         //has access to bank account
                                         MRP_SERVER.read('banking_account', {
                                             owner: emp.business
                                         }, (empAcc) => {
+                                            processedEmployments++;
+                                            console.debug(`Processed employments after account [${processedEmployments}]`);
+
                                             if (empAcc) {
                                                 if (!retData.result)
                                                     retData.result = [];
@@ -195,17 +202,20 @@ onNet('mrp:bankin:server:getAccounts', (source, data, uuid) => {
                                                 retData.result.push(empAcc);
                                             }
 
-                                            if (processedEmployments >= totalEmployments - 1) {
+                                            if (processedEmployments == totalEmployments) {
+                                                console.debug(`Returning accounts [${JSON.stringify(retData)}]`);
                                                 emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
                                             }
                                         });
                                         break;
+                                    } else {
+                                        processedEmployments++;
+                                        console.debug(`Processed employments role doesn't match [${processedEmployments}]`);
                                     }
                                 }
-
-                                processedEmployments++;
                             } else {
                                 processedEmployments++;
+                                console.debug(`Processed employments business not found [${processedEmployments}]`);
                                 //TODO this may be an issue if not returning anything for last account as there is a listener hanging
                                 //emitNet('mrp:bankin:server:getAccounts:response', source, retData, uuid);
                             }

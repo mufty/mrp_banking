@@ -271,6 +271,10 @@ onNet('mrp:bankin:server:withdraw', (source, data, uuid) => {
 });
 
 onNet('mrp:bankin:server:deposit', (source, data, uuid) => {
+    if (!data.deposit_amount || isNaN(data.deposit_amount)) {
+        console.debug(`Trying to deposit no money [${JSON.stringify(data)}]`);
+        return;
+    }
     let char = MRP_SERVER.getSpawnedCharacter(source);
     if (char) {
         data.account.money += parseInt(data.deposit_amount);
@@ -300,6 +304,11 @@ onNet('mrp:bankin:server:deposit', (source, data, uuid) => {
 });
 
 onNet('mrp:bankin:server:deposit:byowner', (data) => {
+    if (!data || !data.ammount || isNaN(data.ammount)) {
+        console.debug(`Trying to deposit no money [${JSON.stringify(data)}]`);
+        return;
+    }
+
     MRP_SERVER.read('banking_account', {
         owner: data.owner,
         default: true
